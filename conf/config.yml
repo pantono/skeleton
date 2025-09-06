@@ -1,0 +1,27 @@
+application:
+  name: ${APP_NAME:Pantono}
+  date_format: d/m/Y
+  date_time_format: d/m/Y H:i:s
+  timezone: '${TIMEZONE:Europe/London}'
+debug: ${DEBUG:false}
+queue:
+  name: ${QUEUE_NAME:pantono}
+  dsn: ${QUEUE_DSN}
+email:
+  dsn: smtp://mail:1025
+twig:
+  path: views
+twig-email:
+  options:
+    -
+database:
+  pantono:
+    type: mysql
+    dsn: 'mysql:host=${DB_HOST};dbname=${DB_NAME};port=${DB_PORT:3306};charset=utf8mb4'
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+    options:
+      #Err Mode Exception
+      3: 2
+      #Emulate Prepares false
+      20: false

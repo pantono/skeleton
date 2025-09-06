@@ -1,0 +1,4 @@
+ping:
+  route: /api/ping
+  controller: App\Endpoint\Ping
+  method: GET

@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+$env = getenv('APPLICATION_ENV') ?: 'local';
+$application = new \Pantono\Core\Application\CliApplication($env, __DIR__ . '/../');
+$application->bootstrap();
+$application->run();

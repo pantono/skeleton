@@ -1,0 +1,68 @@
+services:
+  mysql:
+    container_name: ${APP_PREFIX}-mysql
+    image: mysql:8.2
+    restart: always
+    env_file:
+      - path: ./.env
+        required: true
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./.docker/db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  lb:
+    container_name: ${APP_PREFIX}-lb
+    env_file:
+      - path: ./.env
+        required: true
+    build:
+      context: .docker/lb
+      args:
+        APP_PREFIX: ${APP_PREFIX}
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+      - api
+  web:
+    container_name: ${APP_PREFIX}-web
+    build: .docker/web
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - ./frontend:/app
+  api:
+    container_name: ${APP_PREFIX}-api
+    build: .docker/api
+    volumes:
+      - ./:/var/www/html
+  queue:
+    container_name: ${APP_PREFIX}-queue
+    build: .docker/queue
+    volumes:
+      - ./:/var/www/html
+  rabbitmq:
+    container_name: ${APP_PREFIX}-rabbitmq
+    image: rabbitmq:3.13-management-alpine
+    expose:
+      - 5672
+      - 5671
+      - 15672
+    ports:
+      - "15672:15672"
+  mail:
+    container_name: ${APP_PREFIX}-mail
+    image: axllent/mailpit
+    restart: unless-stopped
+    environment:
+      MP_MAX_MESSAGES: 5000
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      - "8025:8025"
