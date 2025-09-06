@@ -11,23 +11,10 @@ use Pantono\Core\Decorator\GenericArrayDecorator;
 use Pantono\Email\Email;
 use Pantono\Email\EmailTemplates;
 
-class Ping extends AbstractEndpoint{
-    private Email $email;
-    private EmailTemplates $templates;
-
-    public function __construct(Email $email, EmailTemplates $templates)
-    {
-        $this->email = $email;
-        $this->templates = $templates;
-    }
-
+class Ping extends AbstractEndpoint
+{
     public function processRequest(ParameterBag $parameters): array|ResourceAbstract|Response
     {
-        $message = $this->email->createMessage();
-
-        $message->from('test@test.com', 'Test')
-            ->to('test@test.com', 'Test')
-            ->subject('Test Subject')->send();
         return new Item(['pong' => time()], new GenericArrayDecorator());
     }
 }
